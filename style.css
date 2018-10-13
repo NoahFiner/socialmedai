@@ -537,18 +537,6 @@ input[type="submit"]:hover {
   pointer-events: none;
 }
 
-.loading {
-  position: absolute;
-  top: 85%;
-  left: 2.5%;
-  font-size: 4vw;
-  font-family: "Montserrat", "Roboto", helvetica, Arial, sans-serif;
-  font-weight: 200;
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  color: #aaa;
-}
-
 .slide {
   height: 100%;
   width: 100%;
@@ -753,6 +741,59 @@ input[type="submit"]:hover {
   position: absolute;
 }
 
+.initial-stats, #instafeed, #loading {
+  transform: translateY(0);
+  opacity: 1;
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+.initial-stats.loading, #instafeed.loading, #loading.loading {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+#loading {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+}
+
+#loading-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#loading-inner > h3 {
+  position: absolute;
+  width: 100%;
+  top: 60%;
+  font-size: 5em;
+  color: #59C3C3;
+  font-weight: 900;
+  text-align: center;
+}
+
+#loading-icon {
+  position: absolute;
+  height: 100px;
+  width: 100px;
+  left: calc(50% - 50px);
+  top: calc(60% + 8em);
+  background-color: #59C3C3;
+  -webkit-animation: rotation 2s infinite linear;
+}
+
+@-webkit-keyframes rotation {
+		from {
+				-webkit-transform: rotate(0deg);
+		}
+		to {
+				-webkit-transform: rotate(359deg);
+		}
+}
+
 .initial-stats {
   position: relative;
   display: block;
@@ -763,6 +804,8 @@ input[type="submit"]:hover {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  height: auto;
+  margin-top: 50px;
 }
 
 .initial-stats > div > h4 {
@@ -1045,7 +1088,15 @@ p {
   display: none;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 991px) {
+  .initial-stats {
+    height: 50em;
+  }
+
+  #post-outer {
+    margin-top: 15%;
+  }
+
   #header-right {
     height: auto;
     max-height: 0px;

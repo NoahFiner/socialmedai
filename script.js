@@ -59,7 +59,7 @@ var scrollToOrder = false;
           }
           var comments = e.node.edge_media_to_comment.count;
           // var date = e.node.taken_at_timestamp;
-          el.append("<div class='col-sm-3 ig-img-wrap ig-post-outer'\
+          el.append("<div class='col-md-3 ig-img-wrap ig-post-outer'\
                       onclick=\"showMoreInfo('"+e.node.thumbnail_resources[4].src+"', '"+comments+"', '"+cutoffcaption+"', '"+likes+"', '"+rank+"', '"+clarifai_ranks+"', '"+hashtag_ranks+"');\">\
                       <img alt='Instagram Photo " + (i + 1) + "' class='img-responsive ig-img ig-img-" + (i + 1) + "' src='" + e.node.thumbnail_src + "'>\
                       <h2>"+likes+" likes | "+comments+" comments</h2>\
@@ -81,8 +81,16 @@ var scrollToOrder = false;
   }
 }(jQuery));
 
-$(document).ready(function() {
+var startLoading = function() {
+  $(".initial-stats, #instafeed").addClass("loading");
+  $("#loading").removeClass("loading");
+}
+var finishLoading = function() {
+  $(".initial-stats, #instafeed").removeClass("loading");
+  $("#loading").addClass("loading");
+}
 
+$(document).ready(function() {
   for(var i = 0; i < 15; i++) {
     $(".cool-divs").append("<div class='cool-div'\
                             style='transform: rotate("+Math.random()*360+"deg) scaleX(1);\
@@ -115,10 +123,14 @@ $(document).ready(function() {
   });
 
   $("input[name='instagram-search']").click(function() {
+    startLoading();
     $("#instafeed").html("");
     $('#instafeed').igjs({
         user: $("input[name='account']").val()
     });
+    setTimeout(function() {
+      finishLoading();
+    }, 2000);
   })
 
   function shadeColor2(color, percent) {

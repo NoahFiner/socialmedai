@@ -19,7 +19,6 @@
 </head>
 <body>
   <div id="everything-outer">
-
     <div id="post-display-outer" class="invisible">
       <div id="post-outer">
         <div id="post-close">close</div>
@@ -72,14 +71,21 @@
       </div>
     </div>
 
+    <div id="loading" class="loading">
+      <div id="loading-inner">
+        <h3>loading...</h3>
+        <div id="loading-icon"></div>
+      </div>
+    </div>
+
     <div id="content" class="inactive">
       <div class="container">
         <div id="main-form" class="row">
           <h4>analyze an account: </h4><br>
           <input type="text" name="account" value="noahfiner"></input>
-          <input type="submit" name="instagram-search"></input>
+          <input type="submit" value="analyze" name="instagram-search"></input>
         </div>
-        <div class="row initial-stats">
+        <div class="row initial-stats loading">
           <div class="col-md-6">
             <h4>photo descriptions (good / <span>bad</span>)</h4>
             <div class="canvas clarifai-canvas"></div>
@@ -89,7 +95,7 @@
             <div class="canvas tags-canvas"></div>
           </div>
         </div>
-        <div id="instafeed" class="row">
+        <div id="instafeed" class="row loading">
         </div>
       </div>
     </div>
