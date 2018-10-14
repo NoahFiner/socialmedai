@@ -147,6 +147,18 @@ body {
   opacity: 0;
 }
 
+#post-outer.invisible, #myChart.invisible {
+  display: none;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+#myChart {
+  position: absolute;
+}
+
 #post-outer {
   background-color: #EFF9F9;
   display: flex;
