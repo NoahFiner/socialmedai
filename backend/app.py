@@ -54,10 +54,6 @@ def analyze(username):
         print(i)
         i=i+1
 
-        if i == 3:
-            break
-        
-
     # Get user data from ML module
     user = ml.Profile(posts=ml_input_data)
 
