@@ -316,7 +316,7 @@ var addContent = function() {
 
 $(document).ready(function() {
   if (window.location.protocol == 'https:') {
-    alert("")
+    alert("You're currently on https:// protocol. Please use http:// (yes, we know) to analyze posts.");
     // window.location = 'http://' + window.location.hostname + window.location.pathname + window.location.hash;
   }
 
