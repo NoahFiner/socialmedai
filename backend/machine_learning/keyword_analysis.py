@@ -3,6 +3,7 @@ import numpy as np
 import scipy as sp
 import statistics
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 import pickle
 
 import machine_learning.sentiment_module as s_mod
@@ -58,14 +59,14 @@ class Profile:
             self._df = pd.DataFrame(columns=['likes', 'image_url', 'clarifai_result', 'text'])
             like_array = []
 
-            print(data)
+            #print(data)
             for _ in data:
-                print(_)
+                #print(_)
                 image = data[_]
                 like_array += [image['likes']]
 
             like_array = (np.array(like_array)).tolist()
-            print(like_array)
+            #print(like_array)
 
             self._std = np.std(like_array)
             self._range = np.max(like_array) - np.min(like_array)
@@ -77,8 +78,14 @@ class Profile:
             inf = row['likes'] - self._mean_likes
 
             if factor == 'text':
-                word_lst = word_tokenize(row[factor])
-                word_lst = [x for x in word_lst if x != '#' and x != '@']
+                stop_words = set(stopwords.words('english'))
+
+                if row[factor] is None:
+                    word_lst = []
+                else:
+                    word_lst = word_tokenize(row[factor])
+                    print(word_lst)
+                    word_lst = [x for x in word_lst if x not in stop_words and x]
             else:
                 word_lst = row[factor]
 
@@ -104,44 +111,58 @@ class Profile:
                   self.get_posts()}
 
         for key in self.get_posts():
-            print(key)
+            #print(key)
 
             post = self.get_posts()[key]
-            print(post)
-            print(self._mean_likes)
+            #print(post)
+            #print(self._mean_likes)
 
             score = post['likes'] - self._mean_likes
             if score == 0:
                 score = 1
-            print(score)
+            #print(score)
 
             success = (post['likes'] - self._mean_likes) > 0
-            print(success)
+            #print(success)
 
-            text_keywords = [key for key in self.get_cRank() if key in post['text']]
-            image_keywords = [key for key in self.get_cRank() if key in post['clarifai_result']]
+            #print('hi==========', self.get_cRank())
+            #print('bye=========', post['text'])
+            if self.get_cRank() is None:
+                text_keywords = []
+                image_keywords = []
+            else:
+                if post['text'] is None:
+                    text_keywords = []
+                else:
+                    text_keywords = [key for key in self.get_cRank() if key in post['text']]
+
+                if post['clarifai_result'] is None:
+                    image_keywords = []
+                else:
+                    image_keywords = [key for key in self.get_cRank() if key in post['clarifai_result']]
 
             z_scores = (post['likes'] - self._mean_likes) / self._std
-            print(z_scores)
+            #print(z_scores)
 
             try:
                 score = sp.stats.norm.cdf(z_scores)
                 # score = sp.stats.norm.sf(abs(z_scores)) * 2
-                print(score)
+                #print(score)
 
                 score = int((score - 0.5) * 100 // 5)
 
             except ValueError as e:
-                print(z_scores)
-                print(post['likes'])
-                print(self._mean_likes)
-                print(self._std)
+                #print(z_scores)
+                #print(post['likes'])
+                #print(self._mean_likes)
+                #print(self._std)
+                a = 10
 
             image_sentiment, image_confidence = s_mod.sentiment(post['clarifai_result'])
             text_sentiment, text_confidence = s_mod.sentiment(post['text'])
 
-            print('Image Confidence: {}'.format(image_confidence))
-            print('Text Confidence: {}'.format(text_confidence))
+            #print('Image Confidence: {}'.format(image_confidence))
+            #print('Text Confidence: {}'.format(text_confidence))
 
             misaligned = image_sentiment == text_sentiment
 
@@ -162,7 +183,7 @@ class Profile:
                            'comments': post['comments'],
                            'text': post['text']
                            }
-            print(output[key])
+            #print(output[key])
 
         return output
 

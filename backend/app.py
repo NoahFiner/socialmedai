@@ -25,54 +25,66 @@ app = Flask(__name__)
 cla_app = ClarifaiApp(api_key='f9c954e11695463180ee7969993497af')
 model = cla_app.models.get('general-v1.3')
 
+preset_data = ['jocho5899', 'noahfiner', 'jas0nchan9', 'uofmichigan', 'erictheastrojunkie']
+
 @app.route('/analyze/<username>')
 def analyze(username):
-    L = instaloader.Instaloader()
-    profile = Profile.from_username(L.context, username)
-    ml_input_data = {}
-    posts = []
+    if username in preset_data:
+        string_form = ''.join(open('preset_data/' + username + '.txt', 'r').readlines())
+        result = json.loads(string_form)
+    else:
+        L = instaloader.Instaloader()
+        profile = Profile.from_username(L.context, username)
+        ml_input_data = {}
+        posts = []
 
-    # Data prep for ML
-    i = 0
-    for post in profile.get_posts():
-        posts.append(post)
-        print(i)
-        i = i + 1
+        # Data prep for ML
+        i = 0
+        for post in profile.get_posts():
+            posts.append(post)
+            print(i)
+            i = i + 1
 
-    i = 0
-    ml_input_data = {}
-    for post in posts:
-        post_data = {}
-        img = ClImage(url=post.url)
-        post_data['clarifai_result'] = [x['name'] for x in model.predict([img])['outputs'][0]['data']['concepts']]
-        post_data['image_url'] = post.url
-        post_data['likes'] = post.likes
-        post_data['text'] = post.caption
-        post_data['comments'] = post.comments
-        ml_input_data[post.mediaid] = post_data
+            if i == 50:
+                break
 
-        print(i)
-        i=i+1
+        i = 0
+        ml_input_data = {}
+        for post in posts:
+            post_data = {}
+            img = ClImage(url=post.url)
+            post_data['clarifai_result'] = [x['name'] for x in model.predict([img])['outputs'][0]['data']['concepts']]
+            post_data['image_url'] = post.url
+            post_data['likes'] = post.likes
+            post_data['text'] = post.caption
+            post_data['comments'] = post.comments
+            ml_input_data[post.mediaid] = post_data
 
-    # Get user data from ML module
-    user = ml.Profile(posts=ml_input_data)
+            print(i)
+            i=i+1
 
-    result = {"image_analysis": user.evaluate_posts(),
-              "trending_hashtag": user.get_hRank(),
-              "trending_hashtag_image": user.get_iRank()}
+            if i == 50:
+                break
 
-    r = json.dumps(result)
-    loaded_r = json.loads(r)
+        # Get user data from ML module
+        user = ml.Profile(posts=ml_input_data)
 
-    print('')
-    print('')
-    print('result: ', result)
-    print('')
-    print('')
+        result = {"image_analysis": user.evaluate_posts(),
+                  "trending_hashtag": user.get_hRank(),
+                  "trending_hashtag_image": user.get_iRank()}
+
+        r = json.dumps(result)
+        loaded_r = json.loads(r)
+
+        print('')
+        print('')
+        print('result: ', result)
+        print('')
+        print('')
 
     return jsonify(result)
 
 CORS(app=app)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8000)
+    app.run(debug=True, host='0.0.0.0', port=80)

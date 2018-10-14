@@ -14,9 +14,10 @@ flask-cors = "*"
 instaloader = "*"
 clarifai = "*"
 sklearn = "*"
+pyopenssl = "*"
 
 [dev-packages]
 machine-learning = {editable = true, path = "."}
 
 [requires]
-python_version = "3.7"
+python_version = "3"
