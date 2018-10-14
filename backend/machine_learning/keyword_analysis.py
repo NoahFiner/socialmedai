@@ -36,7 +36,7 @@ class Profile:
         combinedGlossary = Merge(hashGlossary, imageGlossary)
 
         self._combinedRank = sorted(combinedGlossary.items(), reverse=True, key=lambda kv: kv[1])
-        self._combinedRank = np.array(self._combinedRank)[:, 0]
+        self._combinedRank = (np.array(self._combinedRank)[:, 0]).tolist()
 
     def get_username(self):
         return self._username
@@ -58,11 +58,13 @@ class Profile:
             self._df = pd.DataFrame(columns=['likes', 'image_url', 'clarifai_result', 'text'])
             like_array = []
 
+            print(data)
             for _ in data:
+                print(_)
                 image = data[_]
                 like_array += [image['likes']]
 
-            like_array = np.array(like_array)
+            like_array = (np.array(like_array)).tolist()
             print(like_array)
 
             self._std = np.std(like_array)
@@ -95,7 +97,7 @@ class Profile:
 
         sorted_glossary = sorted(weighted_glossary.items(), reverse=True, key=lambda kv: kv[1])
 
-        return weighted_glossary, np.array(sorted_glossary)[:, 0]
+        return weighted_glossary, (np.array(sorted_glossary)[:, 0]).tolist()
 
     def evaluate_posts(self):
         output = {key: {'score': 0, 'success': False, 'misalignment': False, 'keywords': []} for key in
@@ -109,6 +111,8 @@ class Profile:
             print(self._mean_likes)
 
             score = post['likes'] - self._mean_likes
+            if score == 0:
+                score = 1
             print(score)
 
             success = (post['likes'] - self._mean_likes) > 0
@@ -140,6 +144,13 @@ class Profile:
             print('Text Confidence: {}'.format(text_confidence))
 
             misaligned = image_sentiment == text_sentiment
+
+            if isinstance(success, np.bool_):
+                success = bool(success)
+
+            if isinstance(misaligned, np.bool_):
+                misaligned = bool(misaligned)
+
 
             output[key] = {'score': score,
                            'success': success,

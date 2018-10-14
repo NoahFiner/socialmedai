@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from flask import request, jsonify
+import json
 import pickle
 import random
 
@@ -49,6 +50,12 @@ def analyze(username):
         post_data['text'] = post.caption
         post_data['comments'] = post.comments
         ml_input_data[post.mediaid] = post_data
+
+        print(i)
+        i=i+1
+
+        if i == 3:
+            break
         
 
     # Get user data from ML module
@@ -57,6 +64,15 @@ def analyze(username):
     result = {"image_analysis": user.evaluate_posts(),
               "trending_hashtag": user.get_hRank(),
               "trending_hashtag_image": user.get_iRank()}
+
+    r = json.dumps(result)
+    loaded_r = json.loads(r)
+
+    print('')
+    print('')
+    print('result: ', result)
+    print('')
+    print('')
 
     return jsonify(result)
 
