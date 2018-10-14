@@ -77,8 +77,11 @@ class Profile:
             inf = row['likes'] - self._mean_likes
 
             if factor == 'text':
-                word_lst = word_tokenize(row[factor])
-                word_lst = [x for x in word_lst if x != '#' and x != '@']
+                if row[factor] is None:
+                    word_lst = []
+                else:
+                    word_lst = word_tokenize(row[factor])
+                    word_lst = [x for x in word_lst if x != '#' and x != '@']
             else:
                 word_lst = row[factor]
 
@@ -118,8 +121,21 @@ class Profile:
             success = (post['likes'] - self._mean_likes) > 0
             print(success)
 
-            text_keywords = [key for key in self.get_cRank() if key in post['text']]
-            image_keywords = [key for key in self.get_cRank() if key in post['clarifai_result']]
+            print('hi==========', self.get_cRank())
+            print('bye=========', post['text'])
+            if self.get_cRank() is None:
+                text_keywords = []
+                image_keywords = []
+            else:
+                if post['text'] is None:
+                    text_keywords = []
+                else:
+                    text_keywords = [key for key in self.get_cRank() if key in post['text']]
+
+                if post['clarifai_result'] is None:
+                    image_keywords = []
+                else:
+                    image_keywords = [key for key in self.get_cRank() if key in post['clarifai_result']]
 
             z_scores = (post['likes'] - self._mean_likes) / self._std
             print(z_scores)

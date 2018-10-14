@@ -48,8 +48,10 @@ word_features_file.close()
 def find_features(words):
     # words = word_tokenize(document)
     features = {}
-    for w in word_features:
-        features[w] = (w in words)
+    
+    if words:
+        for w in word_features:
+            features[w] = (w in words)
 
     return features
 
