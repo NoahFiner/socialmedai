@@ -207,7 +207,7 @@ var addContent = function() {
     for(var i = 0; i < trending_hash_length; i++) {
       var weight = trending_hash_length-i;
       $(".clarifai-canvas").append("<p class='data' style='\
-                  transform: scale("+(1+Math.abs(weight)/trending_hash_length)+");\
+                  transform: scale("+(1+Math.abs(weight)/(trending_hash_length+5))+");\
                   color: "+shadeColor2("#59C3C3", -((weight-trending_hash_length)/15))+";\
                   top: "+(90-Math.pow(weight, 1.2)*5.5)+"%;\
                   left: "+5+"%;'>\
@@ -217,7 +217,7 @@ var addContent = function() {
     for(var i = 0; i < trending_hash_length; i++) {
       var weight = trending_hash_length-i;
       $(".clarifai-canvas").append("<p class='data' style='\
-                  transform: scale("+(1+Math.abs(weight)/trending_hash_length)+");\
+                  transform: scale("+(1+Math.abs(weight)/(trending_hash_length+5))+");\
                   color: "+shadeColor2("#F45B69", ((trending_hash_length-weight)/15))+";\
                   top: "+(90-Math.pow(weight, 1.2)*5.5)+"%;\
                   left: "+55+"%;'>\
@@ -229,9 +229,10 @@ var addContent = function() {
       trending_text_length = 10;
     }
     for(var i = 0; i < trending_text_length; i++) {
+      if(data.trending_hashtag[i] == "n't") data.trending_hashtag[i] = "nt";
       var weight = trending_text_length-i;
       $(".tags-canvas").append("<p class='data' style='\
-                  transform: scale("+(1+Math.abs(weight)/trending_text_length)+");\
+                  transform: scale("+(1+Math.abs(weight)/(trending_text_length+5))+");\
                   color: "+shadeColor2("#59C3C3", -((weight-trending_text_length)/15))+";\
                   top: "+(90-Math.pow(weight, 1.2)*5.5)+"%;\
                   left: "+5+"%;'>\
@@ -240,8 +241,9 @@ var addContent = function() {
     var tagsSize = data.trending_hashtag.length;
     for(var i = 0; i < trending_text_length; i++) {
       var weight = trending_text_length-i;
+      if(data.trending_hashtag[i] == "n't") data.trending_hashtag[i] = "nt";
       $(".tags-canvas").append("<p class='data' style='\
-                  transform: scale("+(1+Math.abs(weight)/trending_text_length)+");\
+                  transform: scale("+(1+Math.abs(weight)/(trending_text_length+5))+");\
                   color: "+shadeColor2("#F45B69", ((trending_text_length-weight)/15))+";\
                   top: "+(90-Math.pow(weight, 1.2)*5.5)+"%;\
                   left: "+55+"%;'>\
@@ -284,6 +286,16 @@ var addContent = function() {
         }
       }
       var comments = post.comments;
+
+      if(hashtag_ranks.length > 2) {
+        console.log(hashtag_ranks);
+        hashtag_ranks = hashtag_ranks.join(", ");
+        hashtag_ranks.replace("n't", "");
+        hashtag_ranks = hashtag_ranks.split(", ");
+        console.log(hashtag_ranks);
+      }
+
+      console.log(hashtag_ranks);
       // var date = e.node.taken_at_timestamp;
       $("#instafeed").prepend("<div class='col-md-3 ig-img-wrap ig-post-outer'\
                   onclick=\"showMoreInfo('"+src+"', '"+comments+"', '"+cutoffcaption+"', '"+likes+"', '"+rank+"', '"+clarifai_ranks+"', '"+hashtag_ranks+"');\">\
@@ -398,6 +410,12 @@ var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks,
   $("#analysis-info > .ranking-outer > .bar-outer > .bar > p").css("transform", "scaleX("+1/((tempRank)/10).toPrecision(2)+")");
   $("#analysis-info > .ranking-outer > .bar-outer > .bar > p").html(parseFloat(rank).toPrecision(2));
 
+  hashtag_ranks = hashtag_ranks.replace(/'/g, "");
+  hashtag_ranks = hashtag_ranks.replace(/\'/g, "");
+
+  clarifai_ranks = clarifai_ranks.replace(/'/g, "");
+  clarifai_ranks = clarifai_ranks.replace(/\'/g, "");
+
   var clarifai_length = clarifai_ranks.length;
   var hashtag_length = hashtag_ranks.length;
   var clarifai_split = 5;
@@ -419,13 +437,18 @@ var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks,
     clarifai_ranks = clarifai_ranks.split(",").reverse().slice(0, clarifai_split);
     hashtag_ranks = hashtag_ranks.split(",").reverse().slice(0, hashtag_split);
 
+    for(var i = 0; i < hashtag_ranks.length; i++) {
+      hashtag_ranks[i] = hashtag_ranks[i].replace(/'/g, "");
+      hashtag_ranks[i] = hashtag_ranks[i].replace(/\'/g, "");
+    }
+
     $("#post-success").html("");
     $("#hash-success").html("");
     if(clarifai_ranks.length > 1) {
       $("#post-success").html("<strong>MOST</strong> - "+clarifai_ranks.join(" | ")+" - <strong>LEAST</strong>");
     }
     if(hashtag_ranks.length > 1) {
-      $("#hash-success").html("<strong>MOST</strong> - "+hashtag_ranks.join(" | ")+" - <strong>LEAST</strong>");
+      $("#hash-success").html("<strong>MOST</strong> - "+hashtag_ranks.join(" | ").replace(/'/g, "")+" - <strong>LEAST</strong>");
     }
   } else {
     $("#analysis-info > .ranking-outer > .bar-outer > .bar, #analysis-info > .ranking-outer > h5").addClass("success").removeClass("poor");
@@ -437,13 +460,18 @@ var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks,
     clarifai_ranks = clarifai_ranks.split(",").slice(0, clarifai_split);
     hashtag_ranks = hashtag_ranks.split(",").slice(0, hashtag_split);
 
+    for(var i = 0; i < hashtag_ranks.length; i++) {
+      hashtag_ranks[i] = hashtag_ranks[i].replace(/'/g, "");
+      hashtag_ranks[i] = hashtag_ranks[i].replace(/\'/g, "");
+    }
+
     $("#post-success").html("");
     $("#hash-success").html("");
     if(clarifai_ranks.length > 1) {
       $("#post-success").html("<strong>MOST</strong> - "+clarifai_ranks.join(" | ")+" - <strong>LEAST</strong>");
     }
     if(hashtag_ranks.length > 1) {
-      $("#hash-success").html("<strong>MOST</strong> - "+hashtag_ranks.join(" | ")+" - <strong>LEAST</strong>");
+      $("#hash-success").html("<strong>MOST</strong> - "+hashtag_ranks.join(" | ").replace(/'/g, "")+" - <strong>LEAST</strong>");
     }
   }
 
