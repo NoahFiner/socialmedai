@@ -298,7 +298,7 @@ var addContent = function() {
       console.log(hashtag_ranks);
       // var date = e.node.taken_at_timestamp;
       $("#instafeed").prepend("<div class='col-md-3 ig-img-wrap ig-post-outer'\
-                  onclick=\"showMoreInfo('"+src+"', '"+comments+"', '"+cutoffcaption+"', '"+likes+"', '"+rank+"', '"+clarifai_ranks+"', '"+hashtag_ranks+"');\">\
+                  onclick=\"showMoreInfo('"+src+"', '"+comments+"', '"+cutoffcaption+"', '"+likes+"', '"+rank+"', '"+clarifai_ranks+"', '"+hashtag_ranks+", "+post.misalignment+"');\">\
                   <img alt='Instagram Photo "+key+"' class='img-responsive ig-img ig-img-"+key+"' src='" + src + "'>\
                   <h2>"+likes+" likes | "+comments+" comments</h2>\
                   <div class='ranking-outer'>\
@@ -392,7 +392,7 @@ $(document).ready(function() {
 
 });
 
-var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks, hashtag_ranks) {
+var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks, hashtag_ranks, misalignment) {
   $("#post-img").attr("src", src);
   $("#post-comments").html(comments);
   $("#post-caption").html(caption.substr(0, 150)+"...");
@@ -445,6 +445,12 @@ var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks,
     for(var i = 0; i < hashtag_ranks.length; i++) {
       hashtag_ranks[i] = hashtag_ranks[i].replace(/'/g, "");
       hashtag_ranks[i] = hashtag_ranks[i].replace(/\'/g, "");
+    }
+
+    if(misalignment) {
+      $("#misaligned-header").html("caption theme NOT aligned with photo content");
+    } else {
+      $("#misaligned-header").html("caption theme IS aligned with photo content");
     }
 
     $("#post-success").html("");
