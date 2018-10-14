@@ -1133,9 +1133,9 @@ p {
   }
 
   #post-left {
-    width: 50%;
-    margin-left: 25%;
-    margin-right: 25%;
+    width: 75%;
+    margin-left: 12.5%;
+    margin-right: 12.5%;
     margin-top: 50px;
   }
 
@@ -1364,7 +1364,11 @@ p {
   }
 
   #analysis-info > .ranking-outer > .bar-outer > .bar.poor {
-    padding-right: 90px;
+    padding-right: 35px;
+  }
+
+  .ranking-outer {
+    flex-wrap: wrap;
   }
 }
 
