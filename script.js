@@ -31,7 +31,12 @@ var scrollToOrder = false;
           if (i < postCount) {
           var src = e.node.thumbnail_resources[0].src;
           var likes = e.node.edge_liked_by.count;
-          var caption = e.node.edge_media_to_caption.edges[0].node.text;
+          var caption = e.node.edge_media_to_caption.edges[0];
+          if(caption == undefined) {
+            caption = "";
+          } else {
+            caption = caption.node.text;
+          }
           caption = caption.replace(/(\r\n\t|\n|\r\t)/gm,"");
           caption = caption.replace(/'/g, "&apos;");
           caption = caption.replace(/"/g, "&quot;");
@@ -50,7 +55,7 @@ var scrollToOrder = false;
           if(Math.abs(rank) < 3) {
             tempRank = 3;
             if(rank < 0) {
-              tempRank*=-1; //i'm too tired for this
+              tempRank*=-1;
             }
           }
 
@@ -103,9 +108,9 @@ $(document).ready(function() {
 
   $(".inactive").removeClass("inactive");
 
-  $('#instafeed').igjs({
-      user: 'noahfiner'
-  });
+  // $('#instafeed').igjs({
+  //     user: 'noahfiner'
+  // });
 
   $("#hamburger-outer").click(function() {
     $("#hamburger-outer, #header-right").toggleClass("expanded");
@@ -125,8 +130,12 @@ $(document).ready(function() {
   $("input[name='instagram-search']").click(function() {
     startLoading();
     $("#instafeed").html("");
+    username = $("input[name='account']").val();
+    if(username[0] == "@") {
+      username = username.substr(1);
+    }
     $('#instafeed').igjs({
-        user: $("input[name='account']").val()
+        user: username
     });
     setTimeout(function() {
       finishLoading();
@@ -351,9 +360,14 @@ var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks,
   $("#post-caption").html(caption.substr(0, 150)+"...");
   $("#post-likes").html(likes);
 
+  var cutoff = 2;
+  if(window.innerWidth < 991) {
+    cutoff = 3.5;
+  }
+
   tempRank = rank;
-  if(Math.abs(rank) < 2) {
-    tempRank = 2;
+  if(Math.abs(rank) < cutoff) {
+    tempRank = cutoff;
     if(rank < 0) {
       tempRank *= -1;
     }
