@@ -205,9 +205,9 @@ var addContent = function() {
       trending_hash_length = 10;
     }
     for(var i = 0; i < trending_hash_length; i++) {
-      var weight = trending_hash_length-i;
+      var weight = 10-i;
       $(".clarifai-canvas").append("<p class='data' style='\
-                  transform: scale("+(1+Math.abs(weight)/(trending_hash_length+5))+");\
+                  transform: scale("+(1+Math.abs(weight)/(trending_hash_length+4)).toPrecision(2)+");\
                   color: "+shadeColor2("#59C3C3", -((weight-trending_hash_length)/15))+";\
                   top: "+(90-Math.pow(weight, 1.2)*5.5)+"%;\
                   left: "+5+"%;'>\
@@ -215,9 +215,9 @@ var addContent = function() {
     }
     var clarifaiSize = data.trending_hashtag_image.length;
     for(var i = 0; i < trending_hash_length; i++) {
-      var weight = trending_hash_length-i;
+      var weight = 10-i;
       $(".clarifai-canvas").append("<p class='data' style='\
-                  transform: scale("+(1+Math.abs(weight)/(trending_hash_length+5))+");\
+                  transform: scale("+(1+Math.abs(weight)/(trending_hash_length+4)).toPrecision(2)+");\
                   color: "+shadeColor2("#F45B69", ((trending_hash_length-weight)/15))+";\
                   top: "+(90-Math.pow(weight, 1.2)*5.5)+"%;\
                   left: "+55+"%;'>\
@@ -230,9 +230,9 @@ var addContent = function() {
     }
     for(var i = 0; i < trending_text_length; i++) {
       if(data.trending_hashtag[i] == "n't") data.trending_hashtag[i] = "nt";
-      var weight = trending_text_length-i;
+      var weight = 10-i;
       $(".tags-canvas").append("<p class='data' style='\
-                  transform: scale("+(1+Math.abs(weight)/(trending_text_length+5))+");\
+                  transform: scale("+(1+Math.abs(weight)/(trending_text_length+4)).toPrecision(2)+");\
                   color: "+shadeColor2("#59C3C3", -((weight-trending_text_length)/15))+";\
                   top: "+(90-Math.pow(weight, 1.2)*5.5)+"%;\
                   left: "+5+"%;'>\
@@ -240,10 +240,10 @@ var addContent = function() {
     }
     var tagsSize = data.trending_hashtag.length;
     for(var i = 0; i < trending_text_length; i++) {
-      var weight = trending_text_length-i;
+      var weight = 10-i;
       if(data.trending_hashtag[i] == "n't") data.trending_hashtag[i] = "nt";
       $(".tags-canvas").append("<p class='data' style='\
-                  transform: scale("+(1+Math.abs(weight)/(trending_text_length+5))+");\
+                  transform: scale("+(1+Math.abs(weight)/(trending_text_length+4)).toPrecision(2)+");\
                   color: "+shadeColor2("#F45B69", ((trending_text_length-weight)/15))+";\
                   top: "+(90-Math.pow(weight, 1.2)*5.5)+"%;\
                   left: "+55+"%;'>\
