@@ -256,6 +256,11 @@ var addContent = function() {
       var src = post.image_url;
       var likes = post.likes;
       var caption = post.text;
+
+      var misalignment = post.misalignment;
+
+      console.log(post.misalignment);
+
       if(caption == undefined) {
         caption = "";
       }
@@ -298,7 +303,7 @@ var addContent = function() {
       console.log(hashtag_ranks);
       // var date = e.node.taken_at_timestamp;
       $("#instafeed").prepend("<div class='col-md-3 ig-img-wrap ig-post-outer'\
-                  onclick=\"showMoreInfo('"+src+"', '"+comments+"', '"+cutoffcaption+"', '"+likes+"', '"+rank+"', '"+clarifai_ranks+"', '"+hashtag_ranks+", "+post.misalignment+"');\">\
+                  onclick=\"showMoreInfo('"+src+"', '"+comments+"', '"+cutoffcaption+"', '"+likes+"', '"+rank+"', '"+clarifai_ranks+"', '"+hashtag_ranks+"', '"+misalignment+"');\">\
                   <img alt='Instagram Photo "+key+"' class='img-responsive ig-img ig-img-"+key+"' src='" + src + "'>\
                   <h2>"+likes+" likes | "+comments+" comments</h2>\
                   <div class='ranking-outer'>\
@@ -447,8 +452,9 @@ var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks,
       hashtag_ranks[i] = hashtag_ranks[i].replace(/\'/g, "");
     }
 
-    if(misalignment) {
-      $("#misaligned-header").html("caption theme NOT aligned with photo content");
+    console.log(misalignment);
+    if(misalignment == "true" && misalignment !== "false") {
+      $("#misaligned-header").html("caption theme IS NOT aligned with photo content");
     } else {
       $("#misaligned-header").html("caption theme IS aligned with photo content");
     }
