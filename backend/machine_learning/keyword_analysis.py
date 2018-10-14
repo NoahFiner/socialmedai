@@ -79,13 +79,14 @@ class Profile:
 
             if factor == 'text':
                 stop_words = set(stopwords.words('english'))
+                special_char = ['!', '#', '-', '@']
 
                 if row[factor] is None:
                     word_lst = []
                 else:
                     word_lst = word_tokenize(row[factor])
                     print(word_lst)
-                    word_lst = [x for x in word_lst if x not in stop_words and x]
+                    word_lst = [x for x in word_lst if x[0].isalpha() and not (x in stop_words or x[0] in special_char)]
             else:
                 word_lst = row[factor]
 
