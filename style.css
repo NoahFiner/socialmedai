@@ -147,6 +147,18 @@ body {
   opacity: 0;
 }
 
+#post-outer.invisible, #myChart.invisible {
+  display: none;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+#myChart {
+  position: absolute;
+}
+
 #post-outer {
   background-color: #EFF9F9;
   display: flex;
@@ -852,6 +864,7 @@ input[type="submit"]:hover {
   display: block;
   background-color: #EFF9F9;
   position: relative;
+  overflow: hidden;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.3);
 }
 
