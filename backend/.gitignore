@@ -1,5 +1,5 @@
 # Custom
-./machine_learning/feature_sets.pickle
+machine_learning/feature_sets.pickle
 
 db/*.db
 
