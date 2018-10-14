@@ -1,10 +1,3 @@
-var changeTimeout, changeInterval, emailChangeTimeout, emailChangeTimeout2;
-var currentSlide = 0;
-var currentEmail = "order";
-
-var scrollToOrder = false;
-
-
 //AMAZING INSTAGRAM SCRAPER
 (function ($){
   $.fn.igjs = function(options) {
@@ -95,6 +88,23 @@ var finishLoading = function() {
   $("#loading").addClass("loading");
 }
 
+
+var addContent = function() {
+  startLoading();
+  $("#instafeed").html("");
+  username = $("input[name='account']").val();
+  if(username[0] == "@") {
+    username = username.substr(1);
+  }
+  $('#instafeed').igjs({
+      user: username.toLowerCase()
+  });
+  setTimeout(function() {
+    finishLoading();
+  }, 2000);
+}
+
+
 $(document).ready(function() {
   for(var i = 0; i < 15; i++) {
     $(".cool-divs").append("<div class='cool-div'\
@@ -128,19 +138,15 @@ $(document).ready(function() {
   });
 
   $("input[name='instagram-search']").click(function() {
-    startLoading();
-    $("#instafeed").html("");
-    username = $("input[name='account']").val();
-    if(username[0] == "@") {
-      username = username.substr(1);
-    }
-    $('#instafeed').igjs({
-        user: username
-    });
-    setTimeout(function() {
-      finishLoading();
-    }, 2000);
+    addContent();
   })
+
+  $("input[name='account']").keypress(function (e) {
+    if (e.which == 13) {
+      addContent();
+      return false;
+    }
+  });
 
   function shadeColor2(color, percent) {
     var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
