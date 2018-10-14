@@ -183,7 +183,7 @@ var addContent = function() {
   console.log("loading...");
 
   $("#instafeed, .canvas").html("");
-  username = $("input[name='account']").val();
+  username = $("input[name='account']").val().toLowerCase();
   if(username[0] == "@") {
     username = username.substr(1);
   }
