@@ -39,6 +39,7 @@ def analyze(username):
         i = i + 1
 
     i = 0
+    ml_input_data = {}
     for post in posts:
         post_data = {}
         img = ClImage(url=post.url)
@@ -47,9 +48,11 @@ def analyze(username):
         post_data['likes'] = post.likes
         post_data['text'] = post.caption
         post_data['comments'] = post.comments
+        ml_input_data[post.mediaid] = post_data
+        
 
     # Get user data from ML module
-    user = ml.Profile(posts=post_data)
+    user = ml.Profile(posts=ml_input_data)
 
     result = {"image_analysis": user.evaluate_posts(),
               "trending_hashtag": user.get_hRank(),
@@ -60,4 +63,4 @@ def analyze(username):
 CORS(app=app)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=80)
+    app.run(debug=True, host='0.0.0.0', port=8000)
