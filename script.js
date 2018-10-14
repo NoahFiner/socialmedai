@@ -182,7 +182,7 @@ var addContent = function() {
 
   console.log("loading...");
 
-  $("#instafeed").html("");
+  $("#instafeed, .canvas").html("");
   username = $("input[name='account']").val();
   if(username[0] == "@") {
     username = username.substr(1);
@@ -201,6 +201,9 @@ var addContent = function() {
     }
 
     var trending_hash_length = Math.floor(data.trending_hashtag_image.length/2);
+    if(trending_hash_length > 10) {
+      trending_hash_length = 10;
+    }
     for(var i = 0; i < trending_hash_length; i++) {
       var weight = trending_hash_length-i;
       $(".clarifai-canvas").append("<p class='data' style='\
@@ -222,6 +225,9 @@ var addContent = function() {
     }
 
     var trending_text_length = Math.floor(data.trending_hashtag.length/2);
+    if(trending_text_length > 10) {
+      trending_text_length = 10;
+    }
     for(var i = 0; i < trending_text_length; i++) {
       var weight = trending_text_length-i;
       $(".tags-canvas").append("<p class='data' style='\
@@ -408,23 +414,37 @@ var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks,
     $("#analysis-info").removeClass("success").addClass("poor");
 
     $("#post-header").html("most negatively influential photo attributes");
-    $("#hash-header").html("most negatively influential hashtags");
+    $("#hash-header").html("most negatively influential keywords");
 
     clarifai_ranks = clarifai_ranks.split(",").reverse().slice(0, clarifai_split);
     hashtag_ranks = hashtag_ranks.split(",").reverse().slice(0, hashtag_split);
-    $("#post-success").html(clarifai_ranks.join(", "));
-    $("#hash-success").html(hashtag_ranks.join(", "));
+
+    $("#post-success").html("");
+    $("#hash-success").html("");
+    if(clarifai_ranks.length > 1) {
+      $("#post-success").html("<strong>MOST</strong> - "+clarifai_ranks.join(" | ")+" - <strong>LEAST</strong>");
+    }
+    if(hashtag_ranks.length > 1) {
+      $("#hash-success").html("<strong>MOST</strong> - "+hashtag_ranks.join(" | ")+" - <strong>LEAST</strong>");
+    }
   } else {
     $("#analysis-info > .ranking-outer > .bar-outer > .bar, #analysis-info > .ranking-outer > h5").addClass("success").removeClass("poor");
     $("#analysis-info").addClass("success").removeClass("poor");
 
     $("#post-header").html("most positively influential photo attributes");
-    $("#hash-header").html("most positively influential hashtags");
+    $("#hash-header").html("most positively influential keywords");
 
     clarifai_ranks = clarifai_ranks.split(",").slice(0, clarifai_split);
     hashtag_ranks = hashtag_ranks.split(",").slice(0, hashtag_split);
-    $("#post-success").html(clarifai_ranks.join(", "));
-    $("#hash-success").html(hashtag_ranks.join(", "));
+
+    $("#post-success").html("");
+    $("#hash-success").html("");
+    if(clarifai_ranks.length > 1) {
+      $("#post-success").html("<strong>MOST</strong> - "+clarifai_ranks.join(" | ")+" - <strong>LEAST</strong>");
+    }
+    if(hashtag_ranks.length > 1) {
+      $("#hash-success").html("<strong>MOST</strong> - "+hashtag_ranks.join(" | ")+" - <strong>LEAST</strong>");
+    }
   }
 
   $("#myChart").addClass("invisible");
