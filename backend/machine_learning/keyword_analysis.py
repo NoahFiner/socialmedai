@@ -78,99 +78,117 @@ class Profile:
 
             if factor == 'text':
                 word_lst = word_tokenize(row[factor])
-                word_lst = [x for x in word_lst if x != '#' and x != '@']
-            else:
-                word_lst = row[factor]
+                word_lst = word_tokenize(row[factor])
+            tagged = nltk.pos_tag(word_lst)
 
-            if isinstance(word_lst, str):
-                word_lst = [word_lst]
+            # chunkGram = r"""Chunk: {<RB.?>*<VB.?>*<NNP>+<NN>?}"""
+            chunkGram = r"""Chunk: {<.*>+}
+                                        }<VB.?|IN|DT>+{"""
+            # {} => inclusion, }{ -> exclusion
 
-            for word in word_lst:
-                if word not in weighted_glossary:
-                    weighted_glossary[word] = inf
-                    continue
+            chunkParser = nltk.RegexpParser(chunkGram)
+            chunked = chunkParser.parse(tagged)
 
-                weighted_glossary[word] += inf
+            word_lst = []
+            for c in chunked:
+                if isinstance(c, tuple):
+                    word_lst.append(c[0])
 
-            new_row = pd.DataFrame({key: row[key] for key in self._df.columns})
-            self._df.append(new_row, ignore_index=False)
+            print(word_lst)
+            word_lst = [x for x in word_lst if (x.isalnum() and x != '#' and x != '@')]
+            # word_lst = [x for x in word_lst if x != '#' and x != '@']
+        else:
+            word_lst = row[factor]
 
-        sorted_glossary = sorted(weighted_glossary.items(), reverse=True, key=lambda kv: kv[1])
+        if isinstance(word_lst, str):
+            word_lst = [word_lst]
 
-        return weighted_glossary, (np.array(sorted_glossary)[:, 0]).tolist()
+        for word in word_lst:
+            if word not in weighted_glossary:
+                weighted_glossary[word] = inf
+                continue
 
-    def evaluate_posts(self):
-        output = {key: {'score': 0, 'success': False, 'misalignment': False, 'keywords': []} for key in
-                  self.get_posts()}
+            weighted_glossary[word] += inf
 
-        for key in self.get_posts():
-            print(key)
+        new_row = pd.DataFrame({key: row[key] for key in self._df.columns})
+        self._df.append(new_row, ignore_index=False)
 
-            post = self.get_posts()[key]
-            print(post)
-            print(self._mean_likes)
+    sorted_glossary = sorted(weighted_glossary.items(), reverse=True, key=lambda kv: kv[1])
 
-            score = post['likes'] - self._mean_likes
-            if score == 0:
-                score = 1
+    return weighted_glossary, (np.array(sorted_glossary)[:, 0]).tolist()
+
+
+def evaluate_posts(self):
+    output = {key: {'score': 0, 'success': False, 'misalignment': False, 'keywords': []} for key in
+              self.get_posts()}
+
+    for key in self.get_posts():
+        print(key)
+
+        post = self.get_posts()[key]
+        print(post)
+        print(self._mean_likes)
+
+        score = post['likes'] - self._mean_likes
+        if score == 0:
+            score = 1
+        print(score)
+
+        success = (post['likes'] - self._mean_likes) > 0
+        print(success)
+
+        text_keywords = [key for key in self.get_cRank() if key in post['text']]
+        image_keywords = [key for key in self.get_cRank() if key in post['clarifai_result']]
+
+        z_scores = (post['likes'] - self._mean_likes) / self._std
+        print(z_scores)
+
+        try:
+            score = sp.stats.norm.cdf(z_scores)
+            # score = sp.stats.norm.sf(abs(z_scores)) * 2
             print(score)
 
-            success = (post['likes'] - self._mean_likes) > 0
-            print(success)
+            score = int((score - 0.5) * 100 // 5)
 
-            text_keywords = [key for key in self.get_cRank() if key in post['text']]
-            image_keywords = [key for key in self.get_cRank() if key in post['clarifai_result']]
-
-            z_scores = (post['likes'] - self._mean_likes) / self._std
+        except ValueError as e:
             print(z_scores)
+            print(post['likes'])
+            print(self._mean_likes)
+            print(self._std)
 
-            try:
-                score = sp.stats.norm.cdf(z_scores)
-                # score = sp.stats.norm.sf(abs(z_scores)) * 2
-                print(score)
+        image_sentiment, image_confidence = s_mod.sentiment(post['clarifai_result'])
+        text_sentiment, text_confidence = s_mod.sentiment(post['text'])
 
-                score = int((score - 0.5) * 100 // 5)
+        print('Image Confidence: {}'.format(image_confidence))
+        print('Text Confidence: {}'.format(text_confidence))
 
-            except ValueError as e:
-                print(z_scores)
-                print(post['likes'])
-                print(self._mean_likes)
-                print(self._std)
+        misaligned = image_sentiment == text_sentiment
 
-            image_sentiment, image_confidence = s_mod.sentiment(post['clarifai_result'])
-            text_sentiment, text_confidence = s_mod.sentiment(post['text'])
+        if isinstance(success, np.bool_):
+            success = bool(success)
 
-            print('Image Confidence: {}'.format(image_confidence))
-            print('Text Confidence: {}'.format(text_confidence))
+        if isinstance(misaligned, np.bool_):
+            misaligned = bool(misaligned)
 
-            misaligned = image_sentiment == text_sentiment
+        output[key] = {'score': score,
+                       'success': success,
+                       'misalignment': misaligned,
+                       'image_keywords': image_keywords,
+                       'text_keywords': text_keywords,
+                       'image_url': post['image_url'],
+                       'likes': post['likes'],
+                       'comments': post['comments'],
+                       'text': post['text']
+                       }
+        print(output[key])
 
-            if isinstance(success, np.bool_):
-                success = bool(success)
+    return output
 
-            if isinstance(misaligned, np.bool_):
-                misaligned = bool(misaligned)
-
-
-            output[key] = {'score': score,
-                           'success': success,
-                           'misalignment': misaligned,
-                           'image_keywords': image_keywords,
-                           'text_keywords': text_keywords,
-                           'image_url': post['image_url'],
-                           'likes': post['likes'],
-                           'comments': post['comments'],
-                           'text': post['text']
-                           }
-            print(output[key])
-
-        return output
-
-#open_file = open('./userdata.pickle', 'rb')
-#userdata = pickle.load(open_file)
-#open_file.close()
-#user = Profile(posts=userdata)
+# open_file = open('./userdata.pickle', 'rb')
+# userdata = pickle.load(open_file)
+# open_file.close()
+# user = Profile(posts=userdata)
 #
-#print(user.get_hRank()[:10])
-#print(user.get_iRank()[:10])
-#print(user.evaluate_posts())
+# print(user.get_hRank()[:10])
+# print(user.get_iRank()[:10])
+# print(user.evaluate_posts())
