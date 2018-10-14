@@ -316,7 +316,8 @@ var addContent = function() {
 
 $(document).ready(function() {
   if (window.location.protocol == 'https:') {
-    window.location = 'http://' + window.location.hostname + window.location.pathname + window.location.hash;
+    alert("")
+    // window.location = 'http://' + window.location.hostname + window.location.pathname + window.location.hash;
   }
 
   $(window).resize(hideGraph);
@@ -435,8 +436,8 @@ var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks,
     $("#analysis-info > .ranking-outer > .bar-outer > .bar, #analysis-info > .ranking-outer > h5").removeClass("success").addClass("poor");
     $("#analysis-info").removeClass("success").addClass("poor");
 
-    $("#post-header").html("most negatively influential photo attributes");
-    $("#hash-header").html("most negatively influential keywords");
+    $("#post-header").html("most negatively influential photo attributes (with Clarifai)");
+    $("#hash-header").html("most negatively influential keywords in caption");
 
     clarifai_ranks = clarifai_ranks.split(",").reverse().slice(0, clarifai_split);
     hashtag_ranks = hashtag_ranks.split(",").reverse().slice(0, hashtag_split);
@@ -458,8 +459,8 @@ var showMoreInfo = function(src, comments, caption, likes, rank, clarifai_ranks,
     $("#analysis-info > .ranking-outer > .bar-outer > .bar, #analysis-info > .ranking-outer > h5").addClass("success").removeClass("poor");
     $("#analysis-info").addClass("success").removeClass("poor");
 
-    $("#post-header").html("most positively influential photo attributes");
-    $("#hash-header").html("most positively influential keywords");
+    $("#post-header").html("most positively influential photo attributes (with Clarifai)");
+    $("#hash-header").html("most positively influential keywords in caption");
 
     clarifai_ranks = clarifai_ranks.split(",").slice(0, clarifai_split);
     hashtag_ranks = hashtag_ranks.split(",").slice(0, hashtag_split);

@@ -1067,6 +1067,7 @@ p {
 
 #footer.analyze-footer {
   top: 8em;
+  z-index: 1000;
 }
 
 #footer::before {
