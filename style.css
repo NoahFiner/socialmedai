@@ -216,9 +216,15 @@ body {
 }
 
 #post-right > div > h6 {
+  height: auto;
   font-weight: 900;
-  font-size: 1.25em;
+  font-size: 1.5em;
   margin: 1em 0;
+}
+
+#post-right > div > h6 > span {
+  font-weight: 300;
+  font-size: 1em;
 }
 
 #post-right > div > p {
@@ -233,8 +239,12 @@ body {
   color: #F45B69
 }
 
+#analysis-info > p {
+  font-size: 1.2em;
+}
+
 #analysis-info > .ranking-outer > .bar-outer > .bar.poor {
-  padding-right: 90px;
+  padding-right: 50px;
 }
 
 #instafeed {
@@ -270,13 +280,27 @@ body {
 .ranking-outer {
   height: 2rem;
   width: 100%;
-  margin-top: 2.75rem;
+  margin-top: 1em;
   display: flex;
   text-align: center;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-start;
 }
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  opacity: 0.5;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  opacity: 0.5;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  opacity: 0.5;
+}
+:-moz-placeholder { /* Firefox 18- */
+  opacity: 0.5;
+}
+
 
 .ranking-outer > h5 {
   font-size: 1.5em;
@@ -345,6 +369,7 @@ body {
   font-weight: 900;
   font-size: 1.25em;
   margin: 0;
+  height: auto;
 }
 
 .ig-post-outer > p {
@@ -689,6 +714,7 @@ input[type="submit"]:hover {
   height: 80vh;
   display: relative;
   opacity: 1;
+  overflow: hidden;
   transition: opacity 1s;
 }
 
@@ -1002,12 +1028,20 @@ p {
   height: 8em;
   position: relative;
   top: 6em;
-  margin-top: 8em;
+  margin-top: 2em;
   background-color: #397D7D;
   color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.splash-footer {
+  top: 3em;
+}
+
+#footer.analyze-footer {
+  top: 8em;
 }
 
 #footer::before {
@@ -1094,7 +1128,22 @@ p {
   }
 
   #post-outer {
-    margin-top: 15%;
+    margin-top: 10em;
+    display: block;
+  }
+
+  #post-left {
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 50px;
+  }
+
+  #post-right {
+    margin-top: 2em;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
   }
 
   #header-right {
@@ -1238,6 +1287,10 @@ p {
   }
 }
 
+.container {
+  height: auto;
+}
+
 @media screen and (max-width: 750px) {
   .status-button {
     display: none;
@@ -1309,12 +1362,17 @@ p {
     top: 70%;
     width: 80%;
   }
+
+  #analysis-info > .ranking-outer > .bar-outer > .bar.poor {
+    padding-right: 90px;
+  }
 }
 
 @media screen and (max-width: 500px) {
   .info {
     width: 70vw;
   }
+
   .instagram {
     bottom: 5em;
     right: 2em !important;
@@ -1322,5 +1380,9 @@ p {
 
   .header-logo-text {
     height: 30%;
+  }
+
+  .canvas > p {
+    transform: scale(1) !important;
   }
 }
