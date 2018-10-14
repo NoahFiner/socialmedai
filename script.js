@@ -315,6 +315,10 @@ var addContent = function() {
 
 
 $(document).ready(function() {
+  if (window.location.protocol == 'https:') {
+    window.location = 'http://' + window.location.hostname + window.location.pathname + window.location.hash;
+  }
+
   $(window).resize(hideGraph);
   for(var i = 0; i < 15; i++) {
     $(".cool-divs").append("<div class='cool-div'\
