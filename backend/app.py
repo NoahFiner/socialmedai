@@ -13,22 +13,26 @@ from clarifai.rest import Image as ClImage
 import machine_learning.keyword_analysis as ml
 
 # Testing machine_learning
-#open_file = open('./machine_learning/userdata.pickle', 'rb')
-#userdata = pickle.load(open_file)
-#open_file.close()
-#user = ml.Profile(posts=userdata)
-#print(user.get_hRank()[:10])
-#print(user.get_iRank()[:10])
-#exit(1)
+# open_file = open('./machine_learning/userdata.pickle', 'rb')
+# userdata = pickle.load(open_file)
+# open_file.close()
+# user = ml.Profile(posts=userdata)
+# print(user.get_hRank()[:10])
+# print(user.get_iRank()[:10])
+# exit(1)
 
 app = Flask(__name__)
 cla_app = ClarifaiApp(api_key='f9c954e11695463180ee7969993497af')
 model = cla_app.models.get('general-v1.3')
 
-preset_data = ['jocho5899', 'noahfiner', 'jas0nchan9', 'uofmichigan', 'erictheastrojunkie']
+preset_data = ['jocho5899', 'noahfiner', 'jas0nchan9', 'uofmichigan', 'erictheastrojunkie',
+               'lilpump', 'kimkardashian', 'ucberkeleyofficial', 'illinois1867', 'instagram']
+
 
 @app.route('/analyze/<username>')
 def analyze(username):
+    global preset_data
+
     if username in preset_data:
         string_form = ''.join(open('preset_data/' + username + '.txt', 'r').readlines())
         result = json.loads(string_form)
@@ -61,7 +65,7 @@ def analyze(username):
             ml_input_data[post.mediaid] = post_data
 
             print(i)
-            i=i+1
+            i = i + 1
 
             if i == 50:
                 break
@@ -82,7 +86,14 @@ def analyze(username):
         print('')
         print('')
 
+    json_result = jsonify(result)
+
+    with open('./present_data/' + username + '.txt', 'w') as outfile:
+        json.dump(json_result, outfile)
+        preset_data.append(username)
+
     return jsonify(result)
+
 
 CORS(app=app)
 
