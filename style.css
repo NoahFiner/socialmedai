@@ -1065,6 +1065,10 @@ p {
   top: 3em;
 }
 
+#misaligned-header {
+  font-weight: 300 !important;
+}
+
 #footer.analyze-footer {
   top: 8em;
   z-index: 1000;
