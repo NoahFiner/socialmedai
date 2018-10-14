@@ -1,3 +1,4 @@
+import os
 import nltk
 import random
 from nltk.classify.scikitlearn import SklearnClassifier
@@ -9,6 +10,7 @@ from nltk.classify import ClassifierI
 from statistics import mode
 from nltk.tokenize import word_tokenize
 
+project_root = os.path.abspath(os.path.dirname(__file__))
 
 class VoteClassifier(ClassifierI):
     def __init__(self, *classifiers):
@@ -32,13 +34,13 @@ class VoteClassifier(ClassifierI):
         return conf
 
 
-dir = '/Users/jasonchang/Desktop/PycharmProjects/natural-language-processing/pickled_algorithms/'
+dir = project_root + '/pickled_algorithms/'
 
-documents_file = open('documents.pickle', 'rb')
+documents_file = open(project_root + '/documents.pickle', 'rb')
 documents = pickle.load(documents_file)
 documents_file.close()
 
-word_features_file = open('word_features.pickle', 'rb')
+word_features_file = open(project_root + '/word_features.pickle', 'rb')
 word_features = pickle.load(word_features_file)
 word_features_file.close()
 
@@ -52,7 +54,7 @@ def find_features(words):
     return features
 
 
-feature_sets_file = open('feature_sets.pickle', 'rb')
+feature_sets_file = open(project_root + '/feature_sets.pickle', 'rb')
 feature_sets = pickle.load(feature_sets_file)
 feature_sets_file.close()
 
