@@ -807,7 +807,7 @@ input[type="submit"]:hover {
 #loading-inner > h3 {
   position: absolute;
   width: 100%;
-  top: 60%;
+  top: 50%;
   font-size: 5em;
   color: #59C3C3;
   font-weight: 900;
@@ -819,9 +819,20 @@ input[type="submit"]:hover {
   height: 100px;
   width: 100px;
   left: calc(50% - 50px);
-  top: calc(60% + 8em);
+  top: calc(50% + 8em);
   background-color: #59C3C3;
   -webkit-animation: rotation 2s infinite linear;
+}
+
+#loading-inner > p {
+  top: calc(70% + 8em);
+  font-size: 1em;
+  color: #59C3C3;
+  text-align: center;
+  width: 100%;
+  left: 0%;
+  position: absolute;
+  opacity: 0.8;
 }
 
 @-webkit-keyframes rotation {
